@@ -10,6 +10,16 @@ $light-green: #45f69e;
 $dark-green: #037e28;
 $light: #f8f8f8;
 
+//Update Bulma's variables
+$family-sans-serif: "Nunito", sans-serif;
+
+$primary: $green;
+$link: $light-green;
+
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+
 //Custom
 
 html {
