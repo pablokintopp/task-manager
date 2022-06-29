@@ -24,6 +24,7 @@
     padding: 42px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+    position: relative;
 
     .task {
         background: white;
@@ -83,4 +84,14 @@
             color: $dark-green;
         }
     }
+}
+
+.circle-add-button {
+    position: absolute;
+    right: 35px;
+    bottom: 35px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
 }

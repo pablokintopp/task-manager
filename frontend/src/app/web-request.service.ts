@@ -12,12 +12,12 @@ export class WebRequestService {
     this.ROOT_URL = 'http://localhost:3000'
   }
 
-  get(uri: string) {
-    return this.httpClient.get(`${this.ROOT_URL}/${uri}`);
+  get<T>(uri: string) {
+    return this.httpClient.get<T>(`${this.ROOT_URL}/${uri}`);
   }
 
-  post(uri: string, payload: Object) {
-    return this.httpClient.post(`${this.ROOT_URL}/${uri}`, payload);
+  post<T>(uri: string, payload: Object) {
+    return this.httpClient.post<T>(`${this.ROOT_URL}/${uri}`, payload);
   }
 
   patch(uri: string, payload: Object) {

@@ -1,0 +1,17 @@
+<div class="centered-content">
+    <div class="modal-box has-background-white">
+        <h1 class="title">Create a new task</h1>
+        <input #newTaskTitleInput class="input has-background-light" type="text" placeholder="New task name">
+        <br />
+        <br />
+        <div class="buttons is-right">
+            <button class="button" [routerLink]="['/lists', listId]">
+                Cancel
+            </button>
+            <button class="button is-primary has-text-white" (click)="createNewTask(newTaskTitleInput.value)">
+                Save
+            </button>
+        </div>
+
+    </div>
+</div>
