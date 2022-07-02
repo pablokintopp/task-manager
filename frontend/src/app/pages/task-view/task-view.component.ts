@@ -34,7 +34,10 @@ export class TaskViewComponent implements OnInit {
     })
   }
 
-
+  onTaskClick(task: Task){
+    task.completed = !task.completed;
+    this.taskService.toggleTaskCompletedFlag(task).subscribe(() => console.log("Success!"));
+  }
 
 
 

@@ -28,5 +28,9 @@ export class TaskService {
     return this.webRequestService.post<Task>(`lists/${listId}/tasks`, { title: title });
   }
 
+  toggleTaskCompletedFlag(task: Task){
+    return this.webRequestService.patch(`lists/${task._listId}/tasks/${task._id}`, { completed: task.completed });
+  }
+
 
 }
