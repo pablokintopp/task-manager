@@ -16,17 +16,28 @@
 
         </div>
         <div class="task-list-container has-background-light">
-            <h1 class="title has-text-primary">
-                Tasks
-            </h1>
+            <div *ngIf="listIdSelected; else noListSelectedDiv">
+                <h1 class="title has-text-primary">
+                    Tasks
+                </h1>
 
-            <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)" [ngClass]="{'completed': task.completed}">
-                <p>{{task.title}}</p>
+                <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)"
+                    [ngClass]="{'completed': task.completed}">
+                    <p>{{task.title}}</p>
+                </div>
+
+                <div class="info-text" *ngIf="tasks.length === 0">
+                    <span >There are no tasks to show for this list yet</span>
+                </div>
+
+                <button class="button circle-add-button is-primary has-text-white"
+                    [routerLink]="['/lists', listIdSelected, 'new-task']">+</button>
             </div>
-
-            <button class="button circle-add-button is-primary has-text-white"
-                [routerLink]="['/lists', listIdSelected, 'new-task']">+</button>
-
+            <ng-template #noListSelectedDiv>
+                <div class="info-text">
+                    <span >No list selected</span>
+                </div>
+            </ng-template> 
         </div>
     </div>
 </div>
