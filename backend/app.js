@@ -25,6 +25,11 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+
+  res.header("Access-Control-Expose-Headers", [
+    HEADER_ACCESS_TOKEN_NAME,
+    HEADER_REFRESH_TOKEN_NAME,
+  ]);
   next();
 });
 
