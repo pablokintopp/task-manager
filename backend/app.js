@@ -6,7 +6,8 @@ const { mongoose } = require("./db/mongoose");
 const bodyParser = require("body-parser");
 
 const { List, Task, User } = require("./db/models");
-const { response } = require("express");
+
+const jwt = require("jsonwebtoken");
 
 const APPLICATION_PORT = 3000;
 const HEADER_REFRESH_TOKEN_NAME = "x-refresh-token";
@@ -33,21 +34,37 @@ app.use((req, res, next) => {
   next();
 });
 
+let verifyUserAuthentication = (request, response, next) => {
+  let accessToken = request.header(HEADER_ACCESS_TOKEN_NAME);
+
+  jwt.verify(accessToken, User.getJWTSecret(), (error, decoded) => {
+    if (error) {
+      response.status(401).send(error);
+    } else {
+      request.user_id = decoded._id;
+      next();
+    }
+  });
+};
+
 app.get("/", (request, response) => {
   response.send("Hello World!");
 });
 
-app.get("/lists", (request, response) => {
-  List.find({}).then((lists) => {
+app.get("/lists", verifyUserAuthentication, (request, response) => {
+  List.find({
+    _userId: request.user_id,
+  }).then((lists) => {
     response.send(lists);
   });
 });
 
-app.post("/lists", (request, response) => {
+app.post("/lists", verifyUserAuthentication, (request, response) => {
   let newListTitle = request.body.title;
-
+  let _userId = request.user_id;
   let newList = new List({
     title: newListTitle,
+    _userId: _userId,
   });
 
   newList.save().then((listDocument) => {
@@ -55,60 +72,110 @@ app.post("/lists", (request, response) => {
   });
 });
 
-app.patch("/lists/:id", (request, response) => {
+app.patch("/lists/:id", verifyUserAuthentication, (request, response) => {
   List.findOneAndUpdate(
-    { _id: request.params.id },
+    { _id: request.params.id, _userId: request.user_id },
     { $set: request.body }
   ).then(() => {
     response.sendStatus(200);
   });
 });
 
-app.delete("/lists/:id", (request, response) => {
-  List.findOneAndRemove({ _id: request.params.id }).then(
-    (removedListDocument) => {
-      response.send(removedListDocument);
-    }
-  );
-});
-
-app.get("/lists/:listId/tasks", (request, response) => {
-  Task.find({ _listId: request.params.listId }).then((tasks) => {
-    response.send(tasks);
-  });
-});
-
-app.post("/lists/:listId/tasks", (request, response) => {
-  let newTask = new Task({
-    title: request.body.title,
-    _listId: request.params.listId,
-  });
-
-  newTask.save().then((newTaskDocument) => {
-    response.send(newTaskDocument);
-  });
-});
-
-app.patch("/lists/:listId/tasks/:taskId", (request, response) => {
-  Task.findOneAndUpdate(
-    {
-      _id: request.params.taskId,
-      _listId: request.params.listId,
-    },
-    { $set: request.body }
-  ).then(() => {
-    response.send({ message: "task updated with success!" });
-  });
-});
-
-app.delete("/lists/:listId/tasks/:taskId", (request, response) => {
-  Task.findOneAndDelete({
-    _id: request.params.taskId,
-    _listId: request.params.listId,
+app.delete("/lists/:id", verifyUserAuthentication, (request, response) => {
+  List.findOneAndRemove({
+    _id: request.params.id,
+    _userId: request.user_id,
   }).then((removedListDocument) => {
     response.send(removedListDocument);
   });
 });
+
+app.get(
+  "/lists/:listId/tasks",
+  verifyUserAuthentication,
+  (request, response) => {
+    Task.find({
+      _listId: request.params.listId,
+      _userId: request.user_id,
+    }).then((tasks) => {
+      response.send(tasks);
+    });
+  }
+);
+
+app.post(
+  "/lists/:listId/tasks",
+  verifyUserAuthentication,
+  (request, response) => {
+    let newTask = new Task({
+      title: request.body.title,
+      _listId: request.params.listId,
+    });
+
+    listBelongsToUser(request.params.listId, request.user_id).then(
+      (belongsToUser) => {
+        if (belongsToUser) {
+          newTask.save().then((newTaskDocument) => {
+            response.send(newTaskDocument);
+          });
+        } else {
+          response
+            .status(404)
+            .send({ message: "List not found for current user" });
+        }
+      }
+    );
+  }
+);
+
+app.patch(
+  "/lists/:listId/tasks/:taskId",
+  verifyUserAuthentication,
+  (request, response) => {
+    listBelongsToUser(request.params.listId, request.user_id).then(
+      (belongsToUser) => {
+        if (belongsToUser) {
+          Task.findOneAndUpdate(
+            {
+              _id: request.params.taskId,
+              _listId: request.params.listId,
+            },
+            { $set: request.body }
+          ).then(() => {
+            response.send({ message: "task updated with success!" });
+          });
+        } else {
+          response
+            .status(404)
+            .send({ message: "List not found for current user" });
+        }
+      }
+    );
+  }
+);
+
+app.delete(
+  "/lists/:listId/tasks/:taskId",
+  verifyUserAuthentication,
+  (request, response) => {
+    listBelongsToUser(request.params.listId, request.user_id).then(
+      (belongsToUser) => {
+        if (belongsToUser) {
+          Task.findOneAndDelete({
+            _id: request.params.taskId,
+            _listId: request.params.listId,
+          }).then((removedListDocument) => {
+            response.send(removedListDocument);
+          });
+        } else {
+          response
+            .status(404)
+            .send({ message: "List not found for current user" });
+        }
+      }
+    );
+  }
+);
 
 app.post("/user", (request, response) => {
   let body = request.body;
@@ -182,6 +249,13 @@ let verifySession = (request, response, next) => {
     .catch((error) => {
       response.status(401).send(error);
     });
+};
+
+let listBelongsToUser = (listId, userId) => {
+  return List.findOne({
+    _id: listId,
+    _userId: userId,
+  }).then((listFound) => listFound != null);
 };
 
 app.get("/user/me/access-token", verifySession, (request, response) => {

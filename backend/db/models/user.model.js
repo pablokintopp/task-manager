@@ -159,6 +159,10 @@ let generateRefreshTokenExpiryTime = (daysUntilExpire = 10) => {
   return Date.now() / 1000 + secondsUntilExpire;
 };
 
+UserSchema.statics.getJWTSecret = () => {
+  return jwtSecret;
+};
+
 const User = mongoose.model("User", UserSchema);
 
 module.exports = { User };
