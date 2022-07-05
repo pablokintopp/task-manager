@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WebRequestService {
-
   readonly ROOT_URL;
 
   constructor(private httpClient: HttpClient) {
-    this.ROOT_URL = 'http://localhost:3000'
+    this.ROOT_URL = 'http://localhost:3000';
   }
 
   get<T>(uri: string) {
@@ -28,4 +27,11 @@ export class WebRequestService {
     return this.httpClient.delete(`${this.ROOT_URL}/${uri}`);
   }
 
+  login(email: string, password: string) {
+    return this.httpClient.post(
+      `${this.ROOT_URL}/user/login`,
+      { email, password },
+      { observe: 'response' }
+    );
+  }
 }
