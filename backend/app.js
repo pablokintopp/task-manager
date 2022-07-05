@@ -86,6 +86,7 @@ app.delete("/lists/:id", verifyUserAuthentication, (request, response) => {
     _id: request.params.id,
     _userId: request.user_id,
   }).then((removedListDocument) => {
+    Task.deleteMany({ _listId: removedListDocument._id });
     response.send(removedListDocument);
   });
 });
