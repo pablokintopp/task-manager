@@ -8,7 +8,7 @@ import { HttpResponse, HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
-  USER_ID_HEADER_NAME = 'user-id';
+  USER_ID_HEADER_NAME = '_id';
   ACCESS_TOKEN_HEADER_NAME = 'x-access-token';
   REFRESH_TOKEN_HEADER_NAME = 'x-refresh-token';
 

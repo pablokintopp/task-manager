@@ -12,6 +12,7 @@ const jwt = require("jsonwebtoken");
 const APPLICATION_PORT = 3000;
 const HEADER_REFRESH_TOKEN_NAME = "x-refresh-token";
 const HEADER_ACCESS_TOKEN_NAME = "x-access-token";
+const HEADER_USER_ID_NAME = "_id";
 
 app.use(bodyParser.json());
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
     "Accept",
     HEADER_ACCESS_TOKEN_NAME,
     HEADER_REFRESH_TOKEN_NAME,
+    HEADER_USER_ID_NAME,
   ]);
 
   res.header("Access-Control-Expose-Headers", [
