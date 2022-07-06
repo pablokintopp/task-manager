@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { List } from 'src/app/models/list.model';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from 'src/app/task.service';
@@ -14,10 +14,12 @@ export class TaskViewComponent implements OnInit {
   tasks: Task[] = [];
   listIdSelected: string = '';
   userEmail: string = '';
+  isAddingNewList: boolean = false;
 
   constructor(
     private taskService: TaskService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -48,5 +50,25 @@ export class TaskViewComponent implements OnInit {
 
   onSignOutButtonClick() {
     this.taskService.signOut();
+  }
+
+  onAddNewListClick() {
+    this.isAddingNewList = true;
+  }
+
+  onBlurNewListItem(newListTitle: string) {
+    this.onAddNewList(newListTitle);
+  }
+
+  onAddNewList(newListTitle: string) {
+    if (newListTitle != null && newListTitle.trim() != '') {
+      this.taskService.createNewList(newListTitle).subscribe((newList) => {
+        this.lists.push(newList);
+        this.listIdSelected = newList._id;
+        this.router.navigate(['/lists', newList._id]);
+      });
+    }
+
+    this.isAddingNewList = false;
   }
 }

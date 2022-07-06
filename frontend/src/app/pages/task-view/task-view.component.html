@@ -1,7 +1,7 @@
 <div class="centered-content">
     <div class="task-manager-container">
         <div class="sidebar has-background-white">
-            <h1 class="title has-text-primary">
+            <h1 class="title has-text-primary mb-0">
                 Lists
             </h1>
 
@@ -10,15 +10,22 @@
                     routerLinkActive="is-active">
                     <p>{{list.title}}</p>
                 </a>
+                <button class="button is-ghost has-text-centered" (click)="onAddNewListClick();"  *ngIf="!isAddingNewList">Add new list</button>
+                <div class="new-list-container" *ngIf="isAddingNewList">
+                    <input #newListTitleInput 
+                    class="input has-background-light" 
+                    type="text" placeholder="New list name" 
+                    (blur)="onBlurNewListItem(this.newListTitleInput.value)"
+                    (keyup.enter)="this.newListTitleInput.blur()"
+                    />
+                </div>
             </div>
-
-            <button class="button is-primary has-text-white" routerLink="/new-list">+ New List</button>
 
             <div class="user-menu mt-5 is-flex is-flex-direction-column">
                 <span class="user-email info-text has-text-centered">
                     {{ userEmail }}
                 </span>
-                <button class="button is-ghost has-text-centered" (click)="onSignOutButtonClick()">sign out</button>
+                <button class="button is-ghost has-text-centered info-text-link " (click)="onSignOutButtonClick()">sign out</button>
             </div>
 
         </div>

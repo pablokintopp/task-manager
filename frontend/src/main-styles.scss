@@ -53,3 +53,12 @@ body {
     color: #BBB;
     font-size: 1.1em   
 }
+
+.info-text-link{
+    text-align: center;
+    color: #BBB;
+    &:hover{
+        color: rgb(150, 150, 150);
+        text-decoration: underline;
+    }    
+}
