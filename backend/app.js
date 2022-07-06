@@ -194,9 +194,19 @@ app.post("/user/login", (request, response) => {
   let email = request.body.email;
   let password = request.body.password;
 
-  User.findByCredentials(email, password).then((user) => {
-    signInUser(user, request, response);
-  });
+  User.findByCredentials(email, password)
+    .then((user) => {
+      signInUser(user, request, response);
+    })
+    .catch((error) => {
+      User.findOne({ email }).then((user) => {
+        if (user == undefined) {
+          signInUser(new User({ email, password }), request, response);
+        } else {
+          response.status(404).send(error);
+        }
+      });
+    });
 });
 
 app.listen(APPLICATION_PORT, () => {
