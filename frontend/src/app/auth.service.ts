@@ -8,6 +8,7 @@ import { HttpResponse, HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
+  USER_EMAIL_KEY_NAME = 'user_email';
   USER_ID_HEADER_NAME = '_id';
   ACCESS_TOKEN_HEADER_NAME = 'x-access-token';
   REFRESH_TOKEN_HEADER_NAME = 'x-refresh-token';
@@ -25,7 +26,8 @@ export class AuthService {
         this.setSession(
           response.body._id,
           response.headers.get(this.ACCESS_TOKEN_HEADER_NAME) as string,
-          response.headers.get(this.REFRESH_TOKEN_HEADER_NAME) as string
+          response.headers.get(this.REFRESH_TOKEN_HEADER_NAME) as string,
+          email
         );
       })
     );
@@ -34,11 +36,13 @@ export class AuthService {
   private setSession(
     userId: string,
     accessToken: string,
-    refreshToken: string
+    refreshToken: string,
+    userEmail: string
   ) {
     localStorage.setItem(this.USER_ID_HEADER_NAME, userId);
     localStorage.setItem(this.ACCESS_TOKEN_HEADER_NAME, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_HEADER_NAME, refreshToken);
+    localStorage.setItem(this.USER_EMAIL_KEY_NAME, userEmail);
   }
 
   logout() {
@@ -51,6 +55,7 @@ export class AuthService {
     localStorage.removeItem(this.USER_ID_HEADER_NAME);
     localStorage.removeItem(this.ACCESS_TOKEN_HEADER_NAME);
     localStorage.removeItem(this.REFRESH_TOKEN_HEADER_NAME);
+    localStorage.removeItem(this.USER_EMAIL_KEY_NAME);
   }
 
   getAccessToken() {
@@ -85,5 +90,9 @@ export class AuthService {
 
   getUserId() {
     return localStorage.getItem(this.USER_ID_HEADER_NAME);
+  }
+
+  getUserEmail() {
+    return localStorage.getItem(this.USER_EMAIL_KEY_NAME);
   }
 }

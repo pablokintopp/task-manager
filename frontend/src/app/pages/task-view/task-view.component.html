@@ -14,6 +14,13 @@
 
             <button class="button is-primary has-text-white" routerLink="/new-list">+ New List</button>
 
+            <div class="user-menu mt-5 is-flex is-flex-direction-column">
+                <span class="user-email info-text has-text-centered">
+                    {{ userEmail }}
+                </span>
+                <button class="button is-ghost has-text-centered" (click)="onSignOutButtonClick()">sign out</button>
+            </div>
+
         </div>
         <div class="task-list-container has-background-light">
             <div *ngIf="listIdSelected; else noListSelectedDiv">

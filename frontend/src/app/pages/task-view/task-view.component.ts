@@ -7,18 +7,20 @@ import { TaskService } from 'src/app/task.service';
 @Component({
   selector: 'app-task-view',
   templateUrl: './task-view.component.html',
-  styleUrls: ['./task-view.component.scss']
+  styleUrls: ['./task-view.component.scss'],
 })
 export class TaskViewComponent implements OnInit {
-
   lists: List[] = [];
   tasks: Task[] = [];
   listIdSelected: string = '';
+  userEmail: string = '';
 
-  constructor(private taskService: TaskService, private route: ActivatedRoute) { }
+  constructor(
+    private taskService: TaskService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-
     this.taskService.getAllLists().subscribe((listsResponse) => {
       this.lists = listsResponse;
     });
@@ -26,19 +28,25 @@ export class TaskViewComponent implements OnInit {
     this.route.params.subscribe((params) => {
       if (params['listId']) {
         this.listIdSelected = params['listId'];
-        this.taskService.getAllTasksFromList(params['listId']).subscribe((tasks) => {
-          this.tasks = tasks
-        })
+        this.taskService
+          .getAllTasksFromList(params['listId'])
+          .subscribe((tasks) => {
+            this.tasks = tasks;
+          });
       }
+    });
 
-    })
+    this.userEmail = this.taskService.getUserEmail();
   }
 
-  onTaskClick(task: Task){
+  onTaskClick(task: Task) {
     task.completed = !task.completed;
-    this.taskService.toggleTaskCompletedFlag(task).subscribe(() => console.log("Success!"));
+    this.taskService
+      .toggleTaskCompletedFlag(task)
+      .subscribe(() => console.log('Success!'));
   }
 
-
-
+  onSignOutButtonClick() {
+    this.taskService.signOut();
+  }
 }
