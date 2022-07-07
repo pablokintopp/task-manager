@@ -23,8 +23,8 @@ export class WebRequestService {
     return this.httpClient.patch(`${this.ROOT_URL}/${uri}`, payload);
   }
 
-  delete(uri: string) {
-    return this.httpClient.delete(`${this.ROOT_URL}/${uri}`);
+  delete<T>(uri: string) {
+    return this.httpClient.delete<T>(`${this.ROOT_URL}/${uri}`);
   }
 
   login(email: string, password: string) {

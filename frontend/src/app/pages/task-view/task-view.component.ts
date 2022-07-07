@@ -13,6 +13,7 @@ export class TaskViewComponent implements OnInit {
   lists: List[] = [];
   tasks: Task[] = [];
   listIdSelected: string = '';
+  listSelected: any;
   userEmail: string = '';
   isAddingNewList: boolean = false;
 
@@ -25,17 +26,17 @@ export class TaskViewComponent implements OnInit {
   ngOnInit(): void {
     this.taskService.getAllLists().subscribe((listsResponse) => {
       this.lists = listsResponse;
-    });
 
-    this.route.params.subscribe((params) => {
-      if (params['listId']) {
-        this.listIdSelected = params['listId'];
-        this.taskService
-          .getAllTasksFromList(params['listId'])
-          .subscribe((tasks) => {
-            this.tasks = tasks;
-          });
-      }
+      this.route.params.subscribe((params) => {
+        if (params['listId']) {
+          this.updateListSelectedList(params['listId']);
+          this.taskService
+            .getAllTasksFromList(params['listId'])
+            .subscribe((tasks) => {
+              this.tasks = tasks;
+            });
+        }
+      });
     });
 
     this.userEmail = this.taskService.getUserEmail();
@@ -64,11 +65,32 @@ export class TaskViewComponent implements OnInit {
     if (newListTitle != null && newListTitle.trim() != '') {
       this.taskService.createNewList(newListTitle).subscribe((newList) => {
         this.lists.push(newList);
-        this.listIdSelected = newList._id;
+        this.updateListSelectedList(newList._id);
         this.router.navigate(['/lists', newList._id]);
       });
     }
 
     this.isAddingNewList = false;
+  }
+
+  updateListSelectedList(newId: string) {
+    this.listIdSelected = newId;
+    if (this.listIdSelected) {
+      this.listSelected = this.lists.find(
+        (list) => list._id === this.listIdSelected
+      );
+    }
+  }
+
+  onDeleteListClickButton() {
+    if (this.listIdSelected) {
+      this.taskService
+        .deleteList(this.listIdSelected)
+        .subscribe((listDeleted) => {
+          this.listIdSelected = '';
+          this.listSelected = undefined;
+          this.router.navigateByUrl('/lists');
+        });
+    }
   }
 }

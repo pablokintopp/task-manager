@@ -45,4 +45,8 @@ export class TaskService {
   signOut() {
     this.authService.logout();
   }
+
+  deleteList(listId: string) {
+    return this.webRequestService.delete<List>(`lists/${listId}`);
+  }
 }
