@@ -93,4 +93,10 @@ export class TaskViewComponent implements OnInit {
         });
     }
   }
+
+  onClickDeleteTask(taskToDelete: Task) {
+    this.taskService.deleteTask(taskToDelete).subscribe((taskDeleted) => {
+      this.tasks = this.tasks.filter((task) => task._id !== taskDeleted._id);
+    });
+  }
 }

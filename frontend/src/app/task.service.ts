@@ -49,4 +49,10 @@ export class TaskService {
   deleteList(listId: string) {
     return this.webRequestService.delete<List>(`lists/${listId}`);
   }
+
+  deleteTask(task: Task) {
+    return this.webRequestService.delete<Task>(
+      `lists/${task._listId}/tasks/${task._id}`
+    );
+  }
 }

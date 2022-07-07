@@ -54,13 +54,22 @@
                           </div>                                            
                     </div>
                 </div>
-
-                <div class="columns">
-                    <div class="task  column is-11" *ngFor="let task of tasks" (click)="onTaskClick(task)"
+                
+                    <div class="task columns" *ngFor="let task of tasks"
                         [ngClass]="{'completed': task.completed}">
-                        <p>{{task.title}}</p>
+                        <div class="column is-10 task-text" (click)="onTaskClick(task)">
+                            <p>{{task.title}}</p>
+                        </div>
+                        <div class="column is-2 show-on-hover-parent">
+                            <button class="button is-ghost" (click)="onClickDeleteTask(task)">
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash"></i>
+                                </span> 
+                            </button>
+                        </div>
+                       
                     </div>
-                </div>
+                
 
 
                 <div class="info-text" *ngIf="tasks.length === 0">
@@ -68,7 +77,11 @@
                 </div>
 
                 <button class="button circle-add-button is-primary has-text-white"
-                    [routerLink]="['/lists', listIdSelected, 'new-task']">+</button>
+                    [routerLink]="['/lists', listIdSelected, 'new-task']">
+                    <span class="icon is-small">
+                        <i class="fas fa-plus"></i>
+                    </span> 
+                </button>
             </div>
             <ng-template #noListSelectedDiv>
                 <div class="info-text">
