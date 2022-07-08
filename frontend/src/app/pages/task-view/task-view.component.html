@@ -31,45 +31,56 @@
         <div class="task-list-container has-background-light">
             <div *ngIf="listIdSelected; else noListSelectedDiv">
                 <div class="columns">
-                    <h1 class="title has-text-primary column is-11 mb-0">
-                        {{ listSelected.title }}
-                    </h1>
+                    <div class="column is-11 mb-0">
+                        <h1 class="mb-0 title has-text-primary" *ngIf="isEditingListTitle === false">
+                            {{ listSelected.title }}
+                        </h1>
+                        <div class="mb-0" *ngIf="isEditingListTitle === true">
+                            <input #listTitleEdited class=" mb-0 title has-background-white has-text-gray" type="text"
+                                placeholder="Inform list title" value="{{listSelected.title}}"
+                                (blur)="onBlurInputEditingTitleList(this.listTitleEdited.value)"
+                                (keyup.enter)="this.listTitleEdited.blur()">
+                        </div>
+                    </div>
+
 
                     <div class="column is-1">
                         <div class="dropdown is-hoverable">
                             <div class="dropdown-trigger">
-                              <button class="button is-ghost" aria-haspopup="true" aria-controls="dropdown-menu4">
-                                <span class="icon is-small">
-                                    <i class="fas fa-ellipsis-vertical"></i>
-                                </span>                                
-                              </button>
+                                <button class="button is-ghost" aria-haspopup="true" aria-controls="dropdown-menu4">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-ellipsis-vertical"></i>
+                                    </span>
+                                </button>
                             </div>
                             <div class="dropdown-menu" id="dropdown-menu4" role="menu">
-                              <div class="dropdown-content">
-                                <div class="dropdown-item">
-                                  <a (click)="onDeleteListClickButton()">Delete list</a>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-item">
+                                        <a (click)="onDeleteListClickButton()">DELETE LIST</a>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <a (click)="onClickEditListTitle()">EDIT LIST TITLE</a>
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                          </div>                                            
+                        </div>
                     </div>
                 </div>
-                
-                    <div class="task columns" *ngFor="let task of tasks"
-                        [ngClass]="{'completed': task.completed}">
-                        <div class="column is-10 task-text" (click)="onTaskClick(task)">
-                            <p>{{task.title}}</p>
-                        </div>
-                        <div class="column is-2 show-on-hover-parent">
-                            <button class="button is-ghost" (click)="onClickDeleteTask(task)">
-                                <span class="icon is-small">
-                                    <i class="fas fa-trash"></i>
-                                </span> 
-                            </button>
-                        </div>
-                       
+
+                <div class="task columns" *ngFor="let task of tasks" [ngClass]="{'completed': task.completed}">
+                    <div class="column is-11 task-text" (click)="onTaskClick(task)">
+                        <p>{{task.title}}</p>
                     </div>
-                
+                    <div class="column is-1 show-on-hover-parent">
+                        <button class="button is-ghost" (click)="onClickDeleteTask(task)">
+                            <span class="icon is-small">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                        </button>
+                    </div>
+
+                </div>
+
 
 
                 <div class="info-text" *ngIf="tasks.length === 0">
@@ -80,7 +91,7 @@
                     [routerLink]="['/lists', listIdSelected, 'new-task']">
                     <span class="icon is-small">
                         <i class="fas fa-plus"></i>
-                    </span> 
+                    </span>
                 </button>
             </div>
             <ng-template #noListSelectedDiv>

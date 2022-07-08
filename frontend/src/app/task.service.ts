@@ -55,4 +55,8 @@ export class TaskService {
       `lists/${task._listId}/tasks/${task._id}`
     );
   }
+
+  updateListTitle(listId: string, newTitle: string) {
+    return this.webRequestService.patch(`lists/${listId}`, { title: newTitle });
+  }
 }

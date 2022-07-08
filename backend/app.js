@@ -83,7 +83,7 @@ app.patch("/lists/:id", verifyUserAuthentication, (request, response) => {
     { _id: request.params.id, _userId: request.user_id },
     { $set: request.body }
   ).then(() => {
-    response.sendStatus(200);
+    response.status(200).send({ message: "OK" });
   });
 });
 

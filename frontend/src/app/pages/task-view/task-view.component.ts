@@ -16,6 +16,7 @@ export class TaskViewComponent implements OnInit {
   listSelected: any;
   userEmail: string = '';
   isAddingNewList: boolean = false;
+  isEditingListTitle: boolean = false;
 
   constructor(
     private taskService: TaskService,
@@ -98,5 +99,20 @@ export class TaskViewComponent implements OnInit {
     this.taskService.deleteTask(taskToDelete).subscribe((taskDeleted) => {
       this.tasks = this.tasks.filter((task) => task._id !== taskDeleted._id);
     });
+  }
+
+  onClickEditListTitle() {
+    this.isEditingListTitle = true;
+  }
+
+  onBlurInputEditingTitleList(newTitleList: string) {
+    if (newTitleList != null && newTitleList.trim().length > 0) {
+      this.taskService
+        .updateListTitle(this.listIdSelected, newTitleList)
+        .subscribe((success) => {
+          this.listSelected.title = newTitleList;
+          this.isEditingListTitle = false;
+        });
+    }
   }
 }
