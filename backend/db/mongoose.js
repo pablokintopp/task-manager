@@ -7,7 +7,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(DB_URL, { useNewUrlParser: true }).then(() => {
     console.log("Connected to MongoDB successfully!");
 }).catch((error) => {
-    console.log("Error while attempting to connect to mongoDB", e);
+    console.log("Error while attempting to connect to mongoDB", error);
 });
 
 // mongoose.set('useCreateIndex', true);
