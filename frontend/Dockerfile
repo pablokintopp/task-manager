@@ -11,7 +11,6 @@ COPY package*.json ./
 #RUN npm install -g npm@latest
 RUN npm install
 RUN npm install -g @angular/cli
-#RUN npm update
 # If you are building your code for production
 # RUN npm ci --only=production
 
@@ -19,4 +18,4 @@ RUN npm install -g @angular/cli
 COPY ./ .
 
 EXPOSE 4200
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+CMD ["ng", "serve"]

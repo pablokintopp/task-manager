@@ -13,13 +13,9 @@ RUN npm install nodemon -g
 #RUN npm update
 # If you are building your code for production
 # RUN npm ci --only=production
-RUN apt update
-RUN apt install nano
 
 # Bundle app source
 COPY ./ .
-#RUN cp -a /usr/src/app/. /usr/src/app_backup
 
 EXPOSE 3030
-#ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
 CMD [ "nodemon", "app.js" ]
