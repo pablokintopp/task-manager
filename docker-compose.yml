@@ -3,26 +3,30 @@ version: '3.1'
 
 services:
   task-manager-backend:
+#    image: taskback
     image: task-manager-backend
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: backend/
+#      dockerfile: Dockerfile
     restart: always
     volumes:
       - ./backend/:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - "3030:3030"
     links:
       - mongo
 
   task-manager-frontend:
+#    image: e1ac6cc59faa
     image: task-manager-frontend
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: frontend/
+#      dockerfile: frontend/Dockerfile
     restart: always
     volumes:
       - ./frontend/:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - "4200:4200"
 
@@ -33,6 +37,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: TaskManager
+    ports:
+      - 0.0.0.0:27018:27017
     volumes:
       - ./dataDB:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
@@ -45,12 +51,12 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo/
 
   theia:
     image: elswork/theia
     restart: always
     ports:
-      - 3031:3031
+      - 0.0.0.0:3031:3000
     volumes:
       - .:/home/project:cached
