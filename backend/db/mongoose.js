@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const DB_URL = 'mongodb://localhost:27017/TaskManager';
+const DB_URL = 'mongodb://root:example@mongo/TaskManager';
 
 mongoose.Promise = global.Promise;
 

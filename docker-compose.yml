@@ -1,0 +1,52 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  task-manager-backend:
+    image: task-manager-backend
+    build:
+      context: backend/
+    restart: always
+    volumes:
+      - ./backend/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3030:3030"
+    links:
+      - mongo
+
+  task-manager-frontend:
+    image: task-manager-frontend
+    build:
+      context: frontend/
+    restart: always
+    volumes:
+      - ./frontend/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "4200:4200"
+
+  mongo:
+    image: mongo:4
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: TaskManager
+    volumes:
+      - ./dataDB:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo/
+
+  theia:
+    image: elswork/theia
+    restart: always
+    ports:
+      - 3031:3000
+    volumes:
+      - .:/home/project:cached
